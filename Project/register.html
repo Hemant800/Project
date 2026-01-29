@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Admission - GGTU</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .register-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border-top: 5px solid #28a745;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="register-box">
+            <div class="header">
+                <h2>Student Registration</h2>
+                <p>Join Govind Guru Tribal University</p>
+            </div>
+
+            <form onsubmit="registerStudent(event)">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Hemant Patidar" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" placeholder="student@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Select Course</label>
+                    <select id="regCourse" required>
+                        <option value="">-- Choose Your Course --</option>
+                        <option value="B.Tech (CS)">B.Tech (Computer Science)</option>
+                        <option value="B.Sc (Maths)">B.Sc (Maths)</option>
+                        <option value="B.A. (Arts)">B.A. (Arts)</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Create Password</label>
+                    <input type="password" placeholder="******" required>
+                </div>
+
+                <button type="submit" class="btn-login" style="background-color: #28a745;">Register Now</button>
+
+                <div class="footer-links">
+                    <p>Already have an account?</p>
+                    <a href="login.html" style="font-weight: bold;">Login Here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+       // --- Updated registerStudent Function ---
+function registerStudent(event) {
+    event.preventDefault(); 
+    
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const course = document.getElementById('regCourse').value;
+    
+    // Yahan password field ki value utha rahe hain (Make sure input me id="regPass" ho ya querySelector use karein)
+    // Register form me Password input ko ye ID dedein: id="regPass"
+    // Agar ID nahi di hai, to ye line use karein:
+    const password = document.querySelector('input[type="password"]').value;
+
+    const enrollmentNo = "GGTU" + Math.floor(1000 + Math.random() * 9000);
+
+    const newStudent = {
+        id: enrollmentNo,
+        name: name,
+        email: email,
+        course: course,
+        password: password, // <-- YE PASSWORD AB SAVE HOGA
+        semester: "1st (New)",
+        status: "Pending Approval"
+    };
+
+    let students = JSON.parse(localStorage.getItem('ggtu_students')) || [];
+    students.push(newStudent);
+    localStorage.setItem('ggtu_students', JSON.stringify(students));
+
+    alert("🎉 Registration Successful!\nYour ID: " + enrollmentNo + "\nPassword: " + password + "\n\n(Wait for Principal Approval to Login)");
+    
+    window.location.href = "login.html";
+}
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login - GGTU</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <div class="header">
+                <h2>Govind Guru Tribal University</h2>
+                <p>Secure Portal Login</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)">
+                
+                <div class="input-group">
+                    <label>Login As</label>
+                    <select id="userRole" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option value="student">👨‍🎓 Student</option>
+                        <option value="teacher">👨‍🏫 Teacher</option>
+                        <option value="principal">🏛️ Principal</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>User ID / Enrollment No</label>
+                    <input type="text" id="userId" placeholder="Enter ID" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="userPass" placeholder="Enter Password" required>
+                </div>
+
+                <button type="submit" class="btn-login">Login</button>
+
+                <div class="footer-links">
+                    <a href="register.html">New Admission? Register Here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Page reload roko
+            
+            const role = document.getElementById('userRole').value;
+            const id = document.getElementById('userId').value.trim();
+            const pass = document.getElementById('userPass').value.trim();
+
+            let loginSuccess = false;
+
+            // --- 1. PRINCIPAL LOGIN CHECK ---
+            if (role === 'principal') {
+                // Fixed ID & Password for Principal
+                if (id === 'admin' && pass === 'admin123') {
+                    loginSuccess = true;
+                    window.location.href = "principal-dashboard.html";
+                } else {
+                    alert("❌ Incorrect Principal ID or Password!");
+                }
+            }
+
+            // --- 2. STUDENT LOGIN CHECK ---
+            else if (role === 'student') {
+                // LocalStorage se students nikalo
+                const students = JSON.parse(localStorage.getItem('ggtu_students')) || [];
+                
+                // Check karo kya ye ID aur Password match ho raha hai?
+                const student = students.find(s => s.id === id && s.password === pass);
+
+                if (student) {
+                    // Agar Status Pending hai to login mat karne do
+                    if (student.status === 'Pending Approval') {
+                        alert("⚠️ Your admission is pending approval by Principal.");
+                    } else {
+                        loginSuccess = true;
+                        // Session Data Save Karo
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userRole', 'student');
+                        localStorage.setItem('userName', student.name);
+                        localStorage.setItem('userId', student.id); // Khud ka data dekhne ke liye
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    alert("❌ Invalid Enrollment No or Password!");
+                }
+            }
+
+            // --- 3. TEACHER LOGIN CHECK ---
+            else if (role === 'teacher') {
+                // LocalStorage se staff nikalo
+                const staffList = JSON.parse(localStorage.getItem('ggtu_staff')) || [];
+                
+                // Check karo kya ye ID aur Password match ho raha hai?
+                const teacher = staffList.find(t => t.id === id && t.password === pass);
+
+                if (teacher) {
+                    loginSuccess = true;
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userRole', 'teacher');
+                    localStorage.setItem('userName', teacher.name);
+                    window.location.href = "teacher-dashboard.html";
+                } else {
+                    alert("❌ Invalid Teacher ID or Password!");
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

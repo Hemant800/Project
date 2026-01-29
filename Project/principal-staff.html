@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Staff - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- POPUP MODAL DESIGN (Naya Form) --- */
+        .modal {
+            display: none; /* Shuru me chhupa rahega */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); /* Peeche ka dhundhla background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+        
+        .close-btn:hover { color: red; }
+
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar" style="background: linear-gradient(180deg, #8e44ad 0%, #2c3e50 100%);">
+            <div class="logo-section">
+                <i class="fas fa-building fa-2x"></i>
+                <h3>Admin Panel</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="principal-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="principal-staff.html" class="active"><i class="fas fa-chalkboard-teacher"></i> Manage Staff</a></li>
+                <li><a href="principal-students.html"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+                <li><a href="principal-notice.html"><i class="fas fa-bullhorn"></i> Publish Notice</a></li>
+                <li><a href="principal-accounts.html"><i class="fas fa-money-bill-wave"></i> Accounts & Fees</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Staff Directory</h2>
+                    <p>Manage Teaching & Non-Teaching Staff</p>
+                </div>
+                <div class="user-profile">
+                     <img src="https://ui-avatars.com/api/?name=Principal&background=8e44ad&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <div class="profile-header">
+                    <h3>All Employees List</h3>
+                    <button class="btn-update" onclick="openModal()" style="width: auto; padding: 8px 20px; background: #28a745;">
+                        <i class="fas fa-plus"></i> Add New Staff
+                    </button>
+                </div>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="addStaffModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">Add New Employee</h3>
+            
+            <form onsubmit="saveStaff(event)">
+                <label>Employee ID</label>
+                <input type="text" id="empId" placeholder="Ex: T-101" required>
+
+                <label>Full Name</label>
+                <input type="text" id="empName" placeholder="Ex: Amit Sharma" required>
+
+                <label>Designation</label>
+                <select id="empRole">
+                    <option>Professor</option>
+                    <option>Assistant Professor</option>
+                    <option>Lab Assistant</option>
+                    <option>Clerk</option>
+                    <option>Peon</option>
+                </select>
+
+                <label>Department</label>
+                <input type="text" id="empDept" placeholder="Ex: Computer Science" required>
+
+                <button type="submit" class="btn-update" style="margin-top: 15px;">Save Employee</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+       
+    // 1. DUMMY DATA (Agar pehli baar khol rahe ho to ye dikhega)
+    const initialData = [
+        { id: 'T-101', name: 'Prof. Sharma', role: 'Professor', dept: 'Computer Science', password: '123' },
+        { id: 'T-102', name: 'Dr. Anjali', role: 'Assistant Professor', dept: 'Physics', password: '123' }
+    ];
+
+    // Page Load hone par table bharo
+    window.onload = function() {
+        renderTable();
+    };
+
+    // --- FUNCTIONS ---
+
+    // Table ko screen par dikhane wala function
+    function renderTable() {
+        const tbody = document.getElementById('staffTableBody');
+        tbody.innerHTML = ""; // Pehle purana saaf karo
+
+        // LocalStorage se data nikalo
+        let staffList = JSON.parse(localStorage.getItem('ggtu_staff'));
+
+        // Agar LocalStorage khali hai, to Initial Data daal do
+        if(!staffList) {
+            localStorage.setItem('ggtu_staff', JSON.stringify(initialData));
+            staffList = initialData;
+        }
+
+        // Loop lagakar row banao
+        staffList.forEach((staff, index) => {
+            const row = `
+                <tr>
+                    <td><b>${staff.id}</b></td>
+                    <td>${staff.name}</td>
+                    <td><span class="badge-grade bg-green">${staff.role}</span></td>
+                    <td>${staff.dept}</td>
+                    <td>
+                        <button onclick="removeStaff(${index})" style="color: red; border: none; background: none; cursor: pointer; font-size: 16px;">
+                            <i class="fas fa-trash-alt"></i> Remove
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Naya Staff Save karne wala function (WITH PASSWORD)
+    function saveStaff(event) {
+        event.preventDefault(); // Page reload roko
+
+        // Values uthao
+        const id = document.getElementById('empId').value;
+        const name = document.getElementById('empName').value;
+        const role = document.getElementById('empRole').value;
+        const dept = document.getElementById('empDept').value;
+
+        // Naya object banao (Password 123456 fix rahega)
+        const newStaff = { 
+            id: id, 
+            name: name, 
+            role: role, 
+            dept: dept,
+            password: "123456" // <-- YE ZAROORI HAI LOGIN KE LIYE
+        };
+
+        // Purani list nikalo, naya jodo, wapas save karo
+        let staffList = JSON.parse(localStorage.getItem('ggtu_staff')) || [];
+        staffList.push(newStaff);
+        localStorage.setItem('ggtu_staff', JSON.stringify(staffList));
+
+        alert("✅ New Staff Added Successfully!\n\nUser ID: " + id + "\nDefault Password: 123456");
+        
+        closeModal(); // Popup band karo
+        renderTable(); // Table update karo
+        
+        // Form clear karo
+        document.getElementById('empId').value = "";
+        document.getElementById('empName').value = "";
+        document.getElementById('empDept').value = "";
+    }
+
+    // Staff Remove karne wala function
+    function removeStaff(index) {
+        if(confirm("Are you sure you want to remove this employee?")) {
+            let staffList = JSON.parse(localStorage.getItem('ggtu_staff'));
+            
+            // Us index wale bande ko hatao
+            staffList.splice(index, 1);
+            
+            // Wapas save karo aur table update karo
+            localStorage.setItem('ggtu_staff', JSON.stringify(staffList));
+            renderTable();
+        }
+    }
+
+    // --- MODAL (POPUP) CONTROLS ---
+    function openModal() {
+        document.getElementById('addStaffModal').style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById('addStaffModal').style.display = "none";
+    }
+
+    // Agar user modal ke bahar click kare to band kardo
+    window.onclick = function(event) {
+        const modal = document.getElementById('addStaffModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+ 
+</body>
+</html>

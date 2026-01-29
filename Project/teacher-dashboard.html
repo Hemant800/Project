@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Panel - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar" style="background: linear-gradient(180deg, #2c3e50 0%, #000000 100%);"> <div class="logo-section">
+                <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                <h3>Staff Portal</h3>
+            </div>
+            <ul class="menu">
+    <li><a href="teacher-dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+    
+    <li><a href="teacher-students.html"><i class="fas fa-users"></i> My Students</a></li>
+    
+    <li><a href="teacher-attendance.html"><i class="fas fa-calendar-check"></i> Mark Attendance</a></li>
+    
+    <li><a href="teacher-marks.html"><i class="fas fa-edit"></i> Upload Marks</a></li>
+    
+    <li><a href="#"><i class="fas fa-file-alt"></i> Leave Request</a></li>
+</ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Welcome, Prof. Sharma 👋</h2>
+                    <p>Department of Computer Science</p>
+                </div>
+                <div class="profile-wrapper" style="margin-top: 20px;">
+    <div class="profile-header">
+        <h3>📢 Staff Notices</h3>
+    </div>
+    <div class="notice-board" id="teacherNoticeContainer">
+        </div>
+</div>
+                <div class="user-profile">
+                     <img src="https://ui-avatars.com/api/?name=Prof+Sharma&background=2c3e50&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon blue"><i class="fas fa-book"></i></div>
+                    <div class="card-info"><h3>Total Classes</h3><p>04</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon green"><i class="fas fa-user-check"></i></div>
+                    <div class="card-info"><h3>Today's Attendance</h3><p>92%</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon red"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="card-info"><h3>Pending Marks</h3><p>CS-301</p></div>
+                </div>
+            </div>
+
+            <div class="profile-wrapper" style="margin-top: 20px;">
+                <div class="profile-header">
+                    <h3>Today's Schedule</h3>
+                </div>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Class/Sem</th>
+                            <th>Subject</th>
+                            <th>Room No</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>09:00 AM</td>
+                            <td>B.Tech Sem 4</td>
+                            <td>Data Structures</td>
+                            <td>Lab-01</td>
+                            <td><button style="padding:5px; background:#28a745; color:white; border:none; border-radius:4px;">Start Class</button></td>
+                        </tr>
+                        <tr>
+                            <td>11:00 AM</td>
+                            <td>B.Sc Sem 2</td>
+                            <td>Basic Computer</td>
+                            <td>Room-102</td>
+                            <td><button style="padding:5px; background:#007bff; color:white; border:none; border-radius:4px;">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+    window.onload = function() {
+        const container = document.getElementById('teacherNoticeContainer');
+        const notices = JSON.parse(localStorage.getItem('ggtu_notices')) || [];
+
+        notices.forEach(notice => {
+            // Agar notice 'all' ke liye hai ya 'teacher' ke liye
+            if (notice.audience === 'all' || notice.audience === 'teacher') {
+                
+                const html = `
+                    <div class="notice-item" style="display:flex; gap:15px; padding:10px; border-bottom:1px solid #eee;">
+                        <div class="date" style="background:#2c3e50; color:white; padding:5px 10px; border-radius:5px; height:fit-content;">${notice.date}</div>
+                        <div class="text">
+                            <h4 style="margin:0;">${notice.title}</h4>
+                            <p style="margin:5px 0 0; color:#666; font-size:13px;">${notice.desc}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            }
+        });
+    };
+</script>
+</body>
+</body>
+</html>

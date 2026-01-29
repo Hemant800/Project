@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Notices - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-university fa-2x"></i>
+                <h3>GGTU Portal</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-graduate"></i> My Profile</a></li>
+                <li><a href="results.html"><i class="fas fa-chart-line"></i> Results</a></li>
+                <li><a href="student-notices.html" class="active"><i class="fas fa-bell"></i> Notices</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Notice Board</h2>
+                    <p>Important Updates & Announcements</p>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Hemant+Patidar&background=0056b3&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <div class="profile-header">
+                    <h3><i class="fas fa-bullhorn" style="color: #e67e22;"></i> Recent Notices</h3>
+                </div>
+                
+                <div id="allNoticesList">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const container = document.getElementById('allNoticesList');
+            
+            // 1. LocalStorage se notices nikalo
+            const allNotices = JSON.parse(localStorage.getItem('ggtu_notices')) || [];
+            
+            // 2. Sirf Students wale notices filter karo
+            // Logic: Audience 'all' ho ya 'student' ho
+            const studentNotices = allNotices.filter(n => n.audience === 'all' || n.audience === 'student');
+
+            // 3. Agar koi notice nahi hai
+            if (studentNotices.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-folder-open fa-3x" style="margin-bottom:15px; opacity:0.5;"></i>
+                        <p>No new notices available for you at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 4. Agar notices hain, to unhe dikhao
+            container.innerHTML = ""; // Clear loading
+            studentNotices.forEach(notice => {
+                const html = `
+                    <div class="notice-item" style="border-bottom: 1px solid #eee; padding: 20px 0; display: flex; gap: 20px;">
+                        <div class="date-box" style="text-align: center; min-width: 70px;">
+                            <div style="background: #0056b3; color: white; padding: 5px; border-radius: 5px 5px 0 0; font-size: 12px; font-weight: bold;">DATE</div>
+                            <div style="background: #f1f2f6; color: #333; padding: 10px; border-radius: 0 0 5px 5px; font-weight: bold; border: 1px solid #ddd;">
+                                ${notice.date}
+                            </div>
+                        </div>
+                        <div class="text-content" style="flex: 1;">
+                            <h4 style="margin-bottom: 8px; color: #2c3e50; font-size: 18px;">${notice.title}</h4>
+                            <p style="color: #666; line-height: 1.6; font-size: 14px;">${notice.desc}</p>
+                            <span style="display: inline-block; margin-top: 10px; font-size: 11px; background: #e3f2fd; color: #0056b3; padding: 3px 8px; border-radius: 20px;">
+                                <i class="fas fa-tag"></i> Official
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        };
+    </script>
+</body>
+</html>

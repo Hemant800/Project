@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Publish Notice - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar" style="background: linear-gradient(180deg, #8e44ad 0%, #2c3e50 100%);">
+            <div class="logo-section">
+                <i class="fas fa-building fa-2x"></i>
+                <h3>Admin Panel</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="principal-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="principal-staff.html"><i class="fas fa-chalkboard-teacher"></i> Manage Staff</a></li>
+                <li><a href="principal-students.html"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+                <li><a href="principal-notice.html" class="active"><i class="fas fa-bullhorn"></i> Publish Notice</a></li>
+                <li><a href="principal-accounts.html"><i class="fas fa-money-bill-wave"></i> Accounts & Fees</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Notice Board Management</h2>
+                    <p>Post updates for College</p>
+                </div>
+                <div class="user-profile">
+                     <img src="https://ui-avatars.com/api/?name=Principal&background=8e44ad&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <div class="form-group">
+                    <label>Notice Title</label>
+                    <input type="text" placeholder="Ex: Exam Schedule Released">
+                </div>
+                <div class="form-group">
+                    <label>Notice For</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option>Everyone (Students & Staff)</option>
+                        <option>Only Students</option>
+                        <option>Only Teachers</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                </div>
+                <button class="btn-update" style="background: #8e44ad;" onclick="alert('Notice Published Successfully!')">Publish Notice</button>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px; color: #555;">Recent Notices</h3>
+            <div class="notice-board">
+                <div class="notice-item">
+                    <div class="date" style="background: #8e44ad;">22 JAN</div>
+                    <div class="text"><h4>Exam Form Date Extended</h4><p>Last date is 30th Jan.</p></div>
+                    <button style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+    <label>Notice Title</label>
+    <input type="text" id="noticeTitle" placeholder="Ex: Exam Schedule Released">
+</div>
+<div class="form-group">
+    <label>Notice For</label>
+    <select id="noticeAudience" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        <option value="all">Everyone (Students & Staff)</option>
+        <option value="student">Only Students</option>
+        <option value="teacher">Only Teachers</option>
+    </select>
+</div>
+<div class="form-group">
+    <label>Description</label>
+    <textarea id="noticeDesc" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+</div>
+<button class="btn-update" style="background: #8e44ad;" onclick="publishNotice()">Publish Notice</button>
+
+<script>
+    function publishNotice() {
+        // 1. Value uthao
+        const title = document.getElementById('noticeTitle').value;
+        const audience = document.getElementById('noticeAudience').value;
+        const desc = document.getElementById('noticeDesc').value;
+        const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); // Ex: 22 Jan
+
+        if(title === "" || desc === "") {
+            alert("Please fill all details!");
+            return;
+        }
+
+        // 2. Object banao
+        const newNotice = {
+            title: title,
+            audience: audience,
+            desc: desc,
+            date: date,
+            id: Date.now() // Unique ID
+        };
+
+        // 3. Purane notices nikalo aur naya add karo
+        let notices = JSON.parse(localStorage.getItem('ggtu_notices')) || [];
+        notices.unshift(newNotice); // Naye notice ko sabse upar rakho
+
+        // 4. Wapas save karo
+        localStorage.setItem('ggtu_notices', JSON.stringify(notices));
+
+        alert('✅ Notice Published Successfully!');
+        
+        // Fields khali kar do
+        document.getElementById('noticeTitle').value = "";
+        document.getElementById('noticeDesc').value = "";
+    }
+</script>
+</body></body>
+
+</html>

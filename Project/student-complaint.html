@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Help Desk - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-university fa-2x"></i>
+                <h3>GGTU Portal</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-graduate"></i> My Profile</a></li>
+                <li><a href="results.html"><i class="fas fa-chart-line"></i> Results</a></li>
+                <li><a href="student-notices.html"><i class="fas fa-bell"></i> Notices</a></li>
+                <li><a href="student-complaint.html" class="active"><i class="fas fa-headset"></i> Help Desk</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Student Help Desk</h2>
+                    <p>Raise your issues directly to Administration</p>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Student&background=0056b3&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <div class="profile-header">
+                    <h3><i class="fas fa-edit"></i> Submit New Complaint</h3>
+                </div>
+
+                <div class="form-group">
+                    <label>Complaint Type</label>
+                    <select id="compType" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option>Academic Issue (Marks/Exam)</option>
+                        <option>Hostel / Canteen Issue</option>
+                        <option>Fees Related</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="compSubject" placeholder="Ex: Marks not updated in result">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="compDesc" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                </div>
+
+                <button class="btn-update" onclick="submitComplaint()">Submit Complaint</button>
+            </div>
+
+            <div class="profile-wrapper" style="margin-top: 30px;">
+                <h3>Your History</h3>
+                <br>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myComplaintsBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page load hone par purani complaints dikhao
+        window.onload = function() {
+            loadMyComplaints();
+        };
+
+        function submitComplaint() {
+            const type = document.getElementById('compType').value;
+            const subject = document.getElementById('compSubject').value;
+            const desc = document.getElementById('compDesc').value;
+            
+            // Logged in student ka naam uthao (Login ke waqt save kiya tha)
+            const studentName = localStorage.getItem('userName') || "Unknown Student";
+            const studentId = localStorage.getItem('userId') || "GGTU-STD";
+
+            if(subject === "" || desc === "") {
+                alert("Please fill all details");
+                return;
+            }
+
+            const newComplaint = {
+                id: Date.now(),
+                studentName: studentName,
+                studentId: studentId,
+                type: type,
+                subject: subject,
+                desc: desc,
+                date: new Date().toLocaleDateString(),
+                status: "Pending" // Shuru me Pending rahega
+            };
+
+            // Save to LocalStorage
+            let complaints = JSON.parse(localStorage.getItem('ggtu_complaints')) || [];
+            complaints.push(newComplaint);
+            localStorage.setItem('ggtu_complaints', JSON.stringify(complaints));
+
+            alert("✅ Complaint Submitted Successfully!");
+            location.reload(); // Refresh page
+        }
+
+        function loadMyComplaints() {
+            const tbody = document.getElementById('myComplaintsBody');
+            const studentId = localStorage.getItem('userId');
+            const allComplaints = JSON.parse(localStorage.getItem('ggtu_complaints')) || [];
+
+            // Sirf meri complaints filter karo
+            const myComplaints = allComplaints.filter(c => c.studentId === studentId);
+
+            if(myComplaints.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>No complaints raised yet.</td></tr>";
+                return;
+            }
+
+            myComplaints.forEach(c => {
+                let badgeColor = c.status === 'Pending' ? 'bg-orange' : 'bg-green';
+                let row = `
+                    <tr>
+                        <td>${c.date}</td>
+                        <td>${c.subject}</td>
+                        <td><span class="badge-grade ${badgeColor}">${c.status}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>

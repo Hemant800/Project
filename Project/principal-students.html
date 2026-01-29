@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Students - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- MODAL (POPUP) DESIGN --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 450px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .student-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 4px solid #8e44ad;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .detail-row span:first-child { font-weight: bold; color: #555; }
+        .detail-row span:last-child { color: #8e44ad; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar" style="background: linear-gradient(180deg, #8e44ad 0%, #2c3e50 100%);">
+            <div class="logo-section">
+                <i class="fas fa-building fa-2x"></i>
+                <h3>Admin Panel</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="principal-dashboard.html"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                <li><a href="principal-staff.html"><i class="fas fa-chalkboard-teacher"></i> Manage Staff</a></li>
+                <li><a href="principal-students.html" class="active"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+                <li><a href="principal-notice.html"><i class="fas fa-bullhorn"></i> Publish Notice</a></li>
+                <li><a href="principal-accounts.html"><i class="fas fa-money-bill-wave"></i> Accounts & Fees</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>All Students Records</h2>
+                    <p>Search via Enrollment No.</p>
+                </div>
+                <div class="user-profile">
+                     <img src="https://ui-avatars.com/api/?name=Principal&background=8e44ad&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 10px; width: 70%;">
+                        <input type="text" id="searchInput" placeholder="Enter Enrollment No (e.g., GGTU...)" style="padding: 12px; width: 100%; border: 1px solid #ddd; border-radius: 5px;">
+                        <button class="btn-update" onclick="searchStudent()" style="width: 150px; margin:0; background: #8e44ad;">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <button class="btn-update" onclick="resetData()" style="width: auto; margin:0; background: #e74c3c;">Reset All</button>
+                </div>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Enrollment No</th>
+                            <th>Student Name</th>
+                            <th>Course</th>
+                            <th>Status</th>
+                            <th>Full Details</th> <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            
+            <img src="https://ui-avatars.com/api/?name=Student&background=random" id="modalImg" class="student-photo">
+            <h3 id="modalName" style="color: #333;">Student Name</h3>
+            <p id="modalCourse" style="color: #777; margin-bottom: 20px;">Course Name</p>
+
+            <div class="detail-row">
+                <span>Enrollment No:</span>
+                <span id="modalId">GGTU123</span>
+            </div>
+            <div class="detail-row">
+                <span>Email ID:</span>
+                <span id="modalEmail">email@example.com</span>
+            </div>
+            <div class="detail-row">
+                <span>Current Semester:</span>
+                <span id="modalSem">1st</span>
+            </div>
+            <div class="detail-row">
+                <span>Admission Status:</span>
+                <span id="modalStatus" style="padding: 2px 8px; border-radius: 4px; color: white;">Active</span>
+            </div>
+
+            <button onclick="closeModal()" class="btn-update" style="margin-top: 20px; width: 100%; background: #333;">Close Profile</button>
+        </div>
+    </div>
+
+    <script>
+        // Default Data
+        const defaultStudents = [
+            { id: 'GGTU2025CS01', name: 'Amit Kumar', email:'amit@ggtu.ac.in', course: 'B.Tech (CS)', semester: '4th', status: 'Active' },
+            { id: 'GGTU2025SC02', name: 'Priya Sharma', email:'priya@ggtu.ac.in', course: 'B.Sc (Maths)', semester: '2nd', status: 'Active' }
+        ];
+
+        window.onload = function() {
+            // Load all students initially
+            let students = JSON.parse(localStorage.getItem('ggtu_students'));
+            if (!students) {
+                localStorage.setItem('ggtu_students', JSON.stringify(defaultStudents));
+                students = defaultStudents;
+            }
+            renderTable(students);
+        };
+
+        // --- 1. SEARCH FUNCTION ---
+        function searchStudent() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const allStudents = JSON.parse(localStorage.getItem('ggtu_students')) || defaultStudents;
+
+            // Filter Logic (ID ya Name match kare)
+            const filteredData = allStudents.filter(student => 
+                student.id.toLowerCase().includes(query) || 
+                student.name.toLowerCase().includes(query)
+            );
+
+            if(filteredData.length === 0) {
+                alert("❌ No Student found with this Enrollment Number!");
+            } else {
+                renderTable(filteredData); // Sirf filtered data dikhao
+            }
+        }
+
+        // --- 2. RENDER TABLE ---
+        function renderTable(data) {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = "";
+
+            data.forEach((std, index) => {
+                let badgeClass = std.status === 'Active' ? 'bg-green' : 'bg-orange';
+                
+                // Humne pura student object 'viewDetails' function me bheja hai
+                // Note: Index global list ka nahi, filtered list ka hai, isliye approve logic thoda dhyan se
+                
+                const row = `
+                    <tr>
+                        <td><b>${std.id}</b></td>
+                        <td>${std.name}</td>
+                        <td>${std.course}</td>
+                        <td><span class="badge-grade ${badgeClass}">${std.status}</span></td>
+                        <td>
+                            <button onclick="viewDetails('${std.id}')" style="background:#007bff; color:white; border:none; padding:5px 15px; cursor:pointer; border-radius:20px;">
+                                <i class="fas fa-eye"></i> View Profile
+                            </button>
+                        </td>
+                        <td>
+                            ${std.status === 'Pending Approval' 
+                                ? `<button onclick="approveStudent('${std.id}')" style="background:#28a745; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px;">Approve</button>` 
+                                : `<i class="fas fa-check-circle" style="color:green;"></i> Verified`
+                            }
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- 3. VIEW DETAILS (POPUP) ---
+        function viewDetails(id) {
+            const allStudents = JSON.parse(localStorage.getItem('ggtu_students'));
+            const student = allStudents.find(s => s.id === id); // Sahi student dhoondo
+
+            if(student) {
+                // Modal me data bharo
+                document.getElementById('modalName').innerText = student.name;
+                document.getElementById('modalId').innerText = student.id;
+                document.getElementById('modalCourse').innerText = student.course;
+                document.getElementById('modalEmail').innerText = student.email || "N/A"; // Agar email na ho to N/A
+                document.getElementById('modalSem').innerText = student.semester;
+                
+                const statusSpan = document.getElementById('modalStatus');
+                statusSpan.innerText = student.status;
+                statusSpan.style.backgroundColor = student.status === 'Active' ? '#28a745' : '#e67e22';
+
+                // Photo update (Avatar API)
+                document.getElementById('modalImg').src = `https://ui-avatars.com/api/?name=${student.name}&background=random&size=128`;
+
+                // Modal dikhao
+                document.getElementById('studentModal').style.display = "flex";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('studentModal').style.display = "none";
+        }
+
+        // --- 4. APPROVE FUNCTION (Updated for Search) ---
+        function approveStudent(id) {
+            let students = JSON.parse(localStorage.getItem('ggtu_students'));
+            
+            // ID se dhoondo kaunsa student approve karna hai
+            const studentIndex = students.findIndex(s => s.id === id);
+            
+            if(studentIndex !== -1) {
+                students[studentIndex].status = 'Active';
+                localStorage.setItem('ggtu_students', JSON.stringify(students));
+                
+                alert("✅ Student Approved!");
+                // Table refresh karo (Wahi search result rahega ya full list, abhi full reload karte hain)
+                searchStudent(); 
+            }
+        }
+
+        function resetData() {
+            if(confirm("Reset all data?")) {
+                localStorage.removeItem('ggtu_students');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

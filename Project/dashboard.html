@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<script>
+    // SECURITY CHECK
+    // Agar banda login nahi hai, to wapas Login page par bhejo
+    const isLogin = localStorage.getItem('isLoggedIn');
+    const role = localStorage.getItem('userRole');
+
+    if (isLogin !== 'true' || role !== 'student') {
+        // Agar login nahi hai YA role student nahi hai
+        alert("🔒 Access Denied! Please Login first.");
+        window.location.href = "login.html";
+    }
+</script>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-university fa-2x"></i>
+                <h3>GGTU Portal</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-graduate"></i> My Profile</a></li>
+                <li><a href="results.html"><i class="fas fa-chart-line"></i> Results</a></li>
+               <li><a href="student-notices.html"><i class="fas fa-bell"></i> Notices</a></li>
+                <div class="notice-board" id="noticeContainer">
+    </div>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Hello, Hemant! 👋</h2>
+                    <p>Govind Guru Tribal University</p>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Hemant+Patidar&background=0056b3&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon blue"><i class="fas fa-calendar-check"></i></div>
+                    <div class="card-info"><h3>Attendance</h3><p>85%</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon green"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="card-info"><h3>Fees</h3><p class="status-paid">Paid</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon red"><i class="fas fa-clock"></i></div>
+                    <div class="card-info"><h3>Next Exam</h3><p>15 May</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Page load hote hi notices check karo
+    window.onload = function() {
+        const container = document.getElementById('noticeContainer');
+        const notices = JSON.parse(localStorage.getItem('ggtu_notices')) || [];
+
+        // Har notice ko check karo
+        notices.forEach(notice => {
+            // Agar notice 'all' ke liye hai ya 'student' ke liye
+            if (notice.audience === 'all' || notice.audience === 'student') {
+                
+                // HTML banao
+                const html = `
+                    <div class="notice-item">
+                        <div class="date">${notice.date}</div>
+                        <div class="text">
+                            <h4>${notice.title}</h4>
+                            <p>${notice.desc}</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Page me jod do
+                container.innerHTML += html;
+            }
+        });
+    };
+    
+    // Sidebar Script (Jo pehle se thi)
+    function showSection(sectionId) {
+        // ... purana code ...
+    }
+</script>
+</body>
+</body>
+</html>

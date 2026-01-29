@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Students - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar" style="background: linear-gradient(180deg, #2c3e50 0%, #000000 100%);">
+            <div class="logo-section">
+                <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                <h3>Staff Portal</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="teacher-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="teacher-students.html" class="active"><i class="fas fa-users"></i> My Students</a></li>
+                <li><a href="teacher-attendance.html"><i class="fas fa-calendar-check"></i> Mark Attendance</a></li>
+                <li><a href="teacher-marks.html"><i class="fas fa-edit"></i> Upload Marks</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Leave Request</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <div class="welcome-text">
+                    <h2>Student List</h2>
+                    <p>B.Tech Computer Science - Semester 4</p>
+                </div>
+                <div class="user-profile">
+                     <img src="https://ui-avatars.com/api/?name=Prof+Sharma&background=2c3e50&color=fff" alt="User">
+                </div>
+            </header>
+
+            <div class="profile-wrapper">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Contact</th>
+                            <th>Performance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>101</td>
+                            <td>Hemant Patidar</td>
+                            <td>9876543210</td>
+                            <td><span class="badge-grade bg-green">Excellent</span></td>
+                            <td><button style="padding:5px 10px; cursor:pointer;">View Profile</button></td>
+                        </tr>
+                        <tr>
+                            <td>102</td>
+                            <td>Rahul Verma</td>
+                            <td>9898989898</td>
+                            <td><span class="badge-grade bg-orange">Average</span></td>
+                            <td><button style="padding:5px 10px; cursor:pointer;">View Profile</button></td>
+                        </tr>
+                        <tr>
+                            <td>103</td>
+                            <td>Priya Singh</td>
+                            <td>7878787878</td>
+                            <td><span class="badge-grade bg-green">Good</span></td>
+                            <td><button style="padding:5px 10px; cursor:pointer;">View Profile</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

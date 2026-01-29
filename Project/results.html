@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - GGTU</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-university fa-2x"></i>
+                <h3>GGTU Portal</h3>
+            </div>
+            <ul class="menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-graduate"></i> My Profile</a></li>
+                <li><a href="results.html" class="active"><i class="fas fa-chart-line"></i> Results</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Notices</a></li>
+            </ul>
+            <div class="logout-section">
+                <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+       <div class="result-summary">
+    <div class="summary-card">
+        <div>
+            <h4>Current SGPA</h4>
+            <h2>8.5</h2>
+        </div>
+        <i class="fas fa-chart-line fa-3x" style="color: #0056b3; opacity: 0.2;"></i>
+    </div>
+    
+    <div class="summary-card" style="border-left-color: #00b894;">
+        <div>
+            <h4>Total Credits</h4>
+            <h2>24</h2>
+        </div>
+        <i class="fas fa-star fa-3x" style="color: #00b894; opacity: 0.2;"></i>
+    </div>
+
+    <div class="summary-card" style="border-left-color: #ffa000;">
+        <div>
+            <h4>Backlogs</h4>
+            <h2>0</h2>
+        </div>
+        <i class="fas fa-exclamation-circle fa-3x" style="color: #ffa000; opacity: 0.2;"></i>
+    </div>
+</div>
+
+<div class="profile-wrapper"> <div class="profile-header">
+        <h3>Semester 3 Marksheet</h3>
+        <button style="padding: 5px 15px; background: #0056b3; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <i class="fas fa-download"></i> Download PDF
+        </button>
+    </div>
+
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>Subject Code</th>
+                <th>Subject Name</th>
+                <th>Obtained Marks</th>
+                <th>Total Marks</th>
+                <th>Grade</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CS-301</td>
+                <td>Data Structures</td>
+                <td><b>85</b></td>
+                <td>100</td>
+                <td><span class="badge-grade bg-green">A+</span></td>
+                <td style="color: green; font-weight: bold;">PASS</td>
+            </tr>
+            <tr>
+                <td>CS-302</td>
+                <td>Digital Electronics</td>
+                <td><b>78</b></td>
+                <td>100</td>
+                <td><span class="badge-grade bg-green">A</span></td>
+                <td style="color: green; font-weight: bold;">PASS</td>
+            </tr>
+            <tr>
+                <td>CS-303</td>
+                <td>Mathematics-III</td>
+                <td><b>65</b></td>
+                <td>100</td>
+                <td><span class="badge-grade bg-orange">B+</span></td>
+                <td style="color: green; font-weight: bold;">PASS</td>
+            </tr>
+            <tr>
+                <td>CS-304</td>
+                <td>Object Oriented Prog.</td>
+                <td><b>92</b></td>
+                <td>100</td>
+                <td><span class="badge-grade bg-green">O</span></td>
+                <td style="color: green; font-weight: bold;">PASS</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
